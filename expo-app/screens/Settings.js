@@ -1,12 +1,12 @@
 import { Space } from "antd";
 import { Button, Input, Spin, Form, message } from "antd";
-import { useContext, useState } from "react";
-import { ChromePicker } from "react-color";
+import { ref, set } from "firebase/database";
+import { useContext } from "react";
 import { Divider } from "react-native-paper";
-import { Text } from "react-native-paper";
 import ColorPicker from "../components/ColorPicker";
 import AppLayout from "../components/Layout";
 import { SettingsContext } from "../Context";
+import { db } from "../Firebase";
 
 const leaf = ["0", "1", "2"];
 
@@ -14,39 +14,23 @@ export default function Settings() {
 
     const { settings, setSettings } = useContext(SettingsContext);
 
-    // const [colors, setColors] = useState({});
-
     const [form] = Form.useForm();
 
-    // const [color, setColor] = useState(colors);
-    const [display, setDisplay] = useState(false)
-
-    // const handleClick = () => {
-    //     setDisplay(!display)
-    // };
-
-    const handleClose = () => {
-        setDisplay(false)
-    };
-
-    const handleChange = (color) => {
-        // props.
-        // setColor(color.rgb)
-    };
-
     const onSubmit = (values) => {
-        console.log("settings", settings[0])
-        console.log("form", values)
-        // push(ref(db, `auth/${sessionData.firebaseUser}`), selectUser)
+        // update messages
+        settings[0][0].m = values.m0
+        settings[0][1].m = values.m1
+        settings[0][2].m = values.m2
 
-        // setSessionData({
-        //     ...sessionData, ...{
-        //         appAuth: true,
-        //         selectedUser: selectUser
-        //     }
-        // })
+        const updatedSettings = {
+            map: settings[0],
+            pair: settings[1]
+        }
 
+        // TODO fix hardcoding
+        const user = (settings[1] === 'user1') ? 'user2' : 'user1'
 
+        set(ref(db, `settings/${user}`), updatedSettings)
 
         message.success("Settings updated!")
 
@@ -61,62 +45,49 @@ export default function Settings() {
                     <Form
                         onFinish={onSubmit}
                         layout="vertical"
-                        onChange={(val) => { console.log(val) }}
-                        fields={[{ name: "pair", value: settings[1] }]}
+                        fields={[{ name: "pair", value: settings[1] }, { name: "m0", value: settings[0]?.[0].m }, { name: "m1", value: settings[0]?.[1].m }, { name: "m2", value: settings[0]?.[2].m }]}
                         form={form}
                     >
-                        <Form.Item
-                            name="pair"
-                            label="Paired User"
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="map"
-                            label="Plant Display Settings"
-                        >
-                            <Space direction="vertical" >
-                                {leaf.map((el, i) =>
-                                    <>
-                                        <Divider title={`Leaf ${i + 1}`}></Divider>
-                                        <Space >
-                                            <Input
-                                                key={i}
-                                                defaultValue="Test"//{settings[el]?.m}
-                                            />
-                                            <span />
-                                            <ColorPicker
-                                                // color={{ r: settings?.[0]?.[i]?.r ?? 0, g: settings?.[0]?.[i]?.g ?? 0, b: settings?.[0]?.[i]?.b ?? 0 }}
-                                                color={settings?.[0]?.[i]}
-                                                display={display}
-                                                handleChange={handleChange}
-                                                handleClose={handleClose}
-                                            // color={{
-                                            //     r: '241',
-                                            //     g: '112',
-                                            //     b: '19',
-                                            //     a: '1',
-                                            // }}
-                                            />
-                                            {/* <ChromePicker
-                                                // color={{ r: settings[0][i].r, g: settings[0][i].g, b: settings[0][i].b }}
-                                                onChange={(e) => { console.log(e) }}
-                                            /> */}
+                        <Space direction="vertical">
+                            <Form.Item
+                                name="pair"
+                                label="Paired User"
+                            >
+                                <Input disabled />
+                            </Form.Item>
+                            <Divider />
+                            <Form.Item
+                                label="Plant Display Settings"
+                            >
+                                <Space direction="vertical" >
+                                    {leaf.map((el, i) =>
+                                        <>
+                                            <Form.Item
+                                                // name={el}
+                                                label={`Leaf ${i + 1}`}
+                                            >
+                                                <Space >
+                                                    <Form.Item
+                                                        name={`m${i}`}
+                                                        label={`Message`}
+                                                    >
+                                                        <Input key={i} />
+                                                    </Form.Item>
+                                                    <span />
+                                                    <Form.Item
+                                                        name={`c${i}`}
+                                                        label={`Color`}
+                                                    >
+                                                        <ColorPicker idx={i} />
+                                                    </Form.Item>
+                                                </Space>
+                                            </Form.Item>
+                                        </>
+                                    )}
+                                </Space>
 
-
-                                        </Space>
-                                    </>
-
-                                    // <Input
-                                    //     key={i}
-                                    // // initialValue={settings[el]?.m}
-                                    // />
-
-
-                                )}
-                            </Space>
-
-                        </Form.Item>
+                            </Form.Item>
+                        </Space>
                         <Form.Item>
                             <Button type="primary" htmlType="submit">
                                 Save
@@ -124,10 +95,10 @@ export default function Settings() {
                         </Form.Item>
                     </Form>
                     :
-
                     <Spin tip="Loading..." />
             }
         </AppLayout >
+
     )
 }
 

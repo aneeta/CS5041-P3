@@ -23,6 +23,7 @@ export default function Messages() {
             {
                 (!dataLoading && msgData) ?
                     <Space direction="vertical">
+
                         {
                             msgData.filter(el => el !== "").map((el, i) =>
                                 // { console.log(el.color) }
