@@ -24,7 +24,9 @@ const Auth = (props) => {
         setSessionData({
             ...sessionData, ...{
                 appAuth: true,
-                selectedUser: selectUser
+                selectedUser: selectUser,
+                pairedUser: (selectUser === 'user1') ? 'user2' : (selectUser === 'user2') ? 'user1' : 'unknown'
+
             }
         })
 
@@ -33,7 +35,9 @@ const Auth = (props) => {
 
     return (
         <AppLayout disabled={true}>
-            <Card>
+            <Card
+                title="Log in to use"
+            >
                 <Form
                     form={form}
                     onFinish={onSubmit}

@@ -24,7 +24,7 @@ export default function App() {
 
   const [authList, dbLoading, dbError] = useListVals(user ? ref(db, `/auth/${user.uid}`) : null);
 
-  const [settingsList, setLoading, setError] = useListVals((user && authList) ? ref(db, `/settings/${authList[0]}`) : null);
+  // const [settingsList, setLoading, setError] = useListVals((user && sessionData?.selectedUser) ? ref(db, `/settings/${sessionData.selectedUser}`) : null);
 
   const [sessionData, setSessionData] = useState({})
   const [msgData, setMsgData] = useState()
@@ -47,8 +47,10 @@ export default function App() {
     // check if firebase user already associated with a user
     if (authList) {
       session.appAuth = true
-      session.selectedUser = authList[0]
-    } else if (authList > 1) {
+      session.selectedUser = authList[authList.length - 1] // most recent assignment
+      session.pairedUser = (session.selectedUser === 'user1') ? 'user2' : (session.selectedUser === 'user2') ? 'user1' : 'unknown'
+    }
+    if (authList > 1) {
       console.log("Unexpected authList", authList)
     }
     // const mostViewedPosts = query(ref(db, 'auth'))
@@ -86,9 +88,9 @@ export default function App() {
     setMsgData(data)
   }, [data, dataLoading, dataError])
 
-  useEffect(() => {
-    setSettings(settingsList)
-  }, [settingsList, setLoading, setError])
+  // useEffect(() => {
+  //   setSettings(settingsList)
+  // }, [settingsList, setLoading, setError])
 
   return (
     <UserContext.Provider value={{ sessionData, setSessionData }}>

@@ -11,22 +11,20 @@ export default function Start() {
 
     const { sessionData, setSessionData } = useContext(UserContext);
 
-    const otherUser = (sessionData.selectedUser == 'user1') ? 'user2' : 'user1'
     return (
-        <AppLayout
-            title="Summary"
-        >
+        <AppLayout>
             <Space direction="vertical">
                 <StatsCard
                     title={`My Stats (${sessionData.selectedUser})`}
                     user={sessionData.selectedUser}
                 />
+                {/* todo make nice?? */}
+                <div style={{ margin: 25 }} />
                 <StatsCard
-                    title={`Paired Stats (${otherUser})`}
-                    user={otherUser}
+                    title={`Paired Stats (${sessionData.pairedUser})`}
+                    user={sessionData.pairedUser}
                 />
             </Space>
-
         </AppLayout >
     )
 }

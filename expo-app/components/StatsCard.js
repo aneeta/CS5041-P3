@@ -55,22 +55,25 @@ export default function StatsCard(props) {
                 return acc
             }, {})
         const lineData = filteredMsg?.map((el, i) => new Date(el.sent * 1000).toISOString().slice(0, 13))
-            .slice(0, 24) // no need to keep more than the first 24 datapoints
             .reduce((acc, item) => {
                 acc[item] = (acc[item] || 0) + 1
                 return acc
             }, {})
+
         if (lineData) {
             const now = new Date()
 
-            const interpolatedData = {};
+            const labels = []
+            const datapoints = []
 
             for (let i = 0; i < 24; i++) {
                 const time = new Date(now.setHours(now.getHours() - 1))
                 const currentKey = time.toISOString().slice(0, 13);
-                const formattedKey = currentKey.slice(11,)
-                interpolatedData[formattedKey] = lineData[currentKey] || 0;
+                labels.push(currentKey.slice(11,))
+                datapoints.push(lineData[currentKey] || 0)
             }
+
+            // console.log("interpolatedData", interpolatedData);
 
             // const sortedTimestamps = Object.keys(lineData).sort();
             // const startDate = new Date(sortedTimestamps[0]);
@@ -89,10 +92,10 @@ export default function StatsCard(props) {
 
 
             const data = {
-                labels: Object.keys(interpolatedData),
+                labels: labels.reverse(),
                 datasets: [
                     {
-                        data: Object.values(interpolatedData),
+                        data: datapoints.reverse(),
                         // color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
                         // strokeWidth: 2 // optional
                     }
@@ -112,8 +115,8 @@ export default function StatsCard(props) {
         if (data) {
             const heatmapData = Object.entries(data).map(([date, count]) => ({ date, count }))
             setFreq(heatmapData)
-            // console.log("heatmap data", data)
-            // console.log("heatmap data transformed", heatmapData)
+            console.log("heatmap data", data)
+            console.log("heatmap data transformed", heatmapData)
         }
 
         const pie = filteredMsg?.map((el, i) => el.leaf)
@@ -164,6 +167,7 @@ export default function StatsCard(props) {
         <Card
             title={props.title}
             loading={cardLoading}
+            style={{ textAlign: 'left' }}
         ><Space direction="vertical" size={25}>
                 <Row gutter={[20, 20]}>
                     <Col span={8}>

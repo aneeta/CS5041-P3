@@ -1,3 +1,6 @@
+import { ConfigProvider, theme } from "antd";
+import { Col } from "antd";
+import { Row } from "antd";
 import { Space } from "antd";
 import { Avatar, Card } from "antd";
 
@@ -6,22 +9,62 @@ const gridStyle = {
     textAlign: 'center',
 };
 
-export default function MessageCard(props) {
-    return (
-        <Card
-            title={props.message}
-        >
-            <Card.Grid hoverable={false} style={{ width: '50%', textAlign: 'left' }}>
-                <Space>
-                    <Card.Meta
-                        avatar={<Avatar style={{ backgroundColor: props.color }} />}
-                    />
-                    {props.sender}
-                </Space>
-            </Card.Grid>
-            <Card.Grid hoverable={false} style={{ width: '50%', textAlign: 'right' }}>{props.timestamp}</Card.Grid>
+const { useToken } = theme;
 
-        </Card>
+
+export default function MessageCard(props) {
+
+    const { token } = useToken();
+
+    const offset = (props.ownMsg) ? 6 : 0
+
+    const msgTheme = {
+        components: {
+            Card: {
+                fontSizeLG: 32,
+                // fontSize: 10,
+                fontWeightStrong: 600,
+                colorText: token.colorPrimaryBorder,
+                paddingLG: 10,
+                // colorFillAlter: props.color,
+
+                // textAlign: (props.ownMsg)? 'right': 'left',
+                // alignContent: 'center',
+            },
+        }
+    }
+    return (
+        <ConfigProvider theme={msgTheme}>
+            <Row>
+                <Col span={18} offset={offset}>
+                    <Card
+                        title={props.message}
+                    // cover={}
+                    >
+                        <div style={{ backgroundColor: props.color, height: 5, width: '100%' }} />
+                        {/* <Card.Grid hoverable={false} style={{ width: '100%' }}>
+                            
+                        </Card.Grid> */}
+                        <Card.Grid hoverable={false} style={{ width: '30%', textAlign: 'left' }}>
+                            {props.sender}
+                            {/* <Space> */}
+                            {/* <Card.Meta
+                        avatar={<Avatar style={{ backgroundColor: props.color }} />}
+                    /> */}
+                            {/* {props.sender} */}
+                            {/* </Space> */}
+                        </Card.Grid>
+                        <Card.Grid hoverable={false} style={{ width: '70%', textAlign: 'right' }}>{props.timestamp}</Card.Grid>
+
+                    </Card>
+                </Col>
+
+
+            </Row>
+
+
+        </ConfigProvider>
+
 
     )
 }

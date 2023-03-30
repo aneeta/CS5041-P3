@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { Spin, List } from "antd";
 import { Space } from "antd";
 import { Card } from "antd";
 import { useContext, useEffect } from "react";
@@ -22,22 +22,31 @@ export default function Messages() {
         >
             {
                 (!dataLoading && msgData) ?
-                    <Space direction="vertical">
-
-                        {
-                            msgData.filter(el => el !== "").map((el, i) =>
-                                // { console.log(el.color) }
+                    // console.log('msg')
+                    // <Space size={100}>
+                    <List
+                        grid={{
+                            gutter: 16,
+                            column: 1,
+                        }}
+                        pagination={{
+                            pageSize: 10
+                        }}
+                        dataSource={msgData.filter(el => el !== "")}
+                        renderItem={(el) => (
+                            <List.Item>
                                 <MessageCard
-                                    key={i}
+                                    // key={i}
                                     message={el.msg}
                                     sender={el.from}
                                     timestamp={new Date(el.sent * 1000).toLocaleDateString("en-GB", { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                     color={rgbToHex(el.color)}
+                                    ownMsg={sessionData.selectedUser === el.from}
                                 />
-                            )
-                        }
-                    </Space>
-
+                            </List.Item>
+                        )}
+                    />
+                    // </Space>
 
                     :
                     <Spin tip="Loading..." />
@@ -46,3 +55,19 @@ export default function Messages() {
         </AppLayout>
     )
 }
+
+                   // <>
+                    //     {
+                    // msgData.filter(el => el !== "").map((el, i) =>
+                    //     // {console.log(el.color)}
+                    //     <MessageCard
+                    //         key={i}
+                    //         message={el.msg}
+                    //         sender={el.from}
+                    //         timestamp={new Date(el.sent * 1000).toLocaleDateString("en-GB", { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    //         color={rgbToHex(el.color)}
+                    //         ownMsg={sessionData.selectedUser === el.from}
+                    //     />
+                    //         )
+                    //     }
+                    // </>

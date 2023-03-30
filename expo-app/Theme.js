@@ -10,10 +10,14 @@ export const customTheme = {
             motionDurationSlow: "0.8s"
         },
         Card: {
-            fontSizeLG: 20,
-            fontWeightStrong: 700,
+            fontSizeLG: 24,
+            fontWeightStrong: 900,
+            colorTextHeading: "#276321",
             // textAlign: 'center',
             // alignContent: 'center',
+        },
+        Space: {
+            size: 25,
         },
         // Header: {
         //     position: 'sticky',
