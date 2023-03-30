@@ -1,3 +1,4 @@
+import { ConfigProvider } from 'antd';
 import { signInAnonymously } from 'firebase/auth';
 import { get, query, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
@@ -9,10 +10,12 @@ import { Routes } from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { UserContext, DataContext, SettingsContext } from './Context';
 import { auth, db } from './Firebase';
+
 import Auth from './screens/Auth';
 import Messages from './screens/Messages';
 import Settings from './screens/Settings';
 import Start from './screens/Start';
+import { customTheme } from './Theme';
 
 export default function App() {
   const [user, authLoading, authError] = useAuthState(auth)
@@ -91,14 +94,16 @@ export default function App() {
     <UserContext.Provider value={{ sessionData, setSessionData }}>
       <DataContext.Provider value={{ msgData, dataLoading }}>
         <SettingsContext.Provider value={{ settings, setSettings }}>
+          {/* <ConfigProvider theme={customTheme}> */}
           <BrowserRouter>
             <Routes>
-              <Route path='/' element={<Start />} />
+              <Route path='/' element={<Auth />} />
               <Route path='/messages' element={<Messages />} />
               <Route path='/settings' element={<Settings />} />
-              <Route path='/auth' element={<Auth />} />
+              <Route path='/home' element={<Start />} />
             </Routes>
           </BrowserRouter>
+          {/* </ConfigProvider> */}
         </SettingsContext.Provider>
       </DataContext.Provider>
     </UserContext.Provider>

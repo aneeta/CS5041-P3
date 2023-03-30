@@ -38,7 +38,9 @@ export default function Settings() {
     return (
         <AppLayout
             title="Settings"
-        > {
+        >
+
+            {
                 (settings || settings?.length === 2) ?
                     <Form
                         onFinish={onSubmit}

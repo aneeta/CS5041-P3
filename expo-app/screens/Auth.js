@@ -28,7 +28,7 @@ const Auth = (props) => {
             }
         })
 
-        navigate('/');
+        navigate('/home');
     };
 
     return (
