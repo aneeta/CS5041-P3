@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import reactCSS from 'reactcss'
-import { Material, SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color'
 import { rgbToHex } from '../utils';
-import { ColorContext, SettingsContext } from '../Context';
+import { SettingsContext } from '../Context';
 
 const styles = reactCSS({
     'default': {
@@ -52,32 +52,10 @@ export default function ColorPicker(props) {
 
     const handleChange = (val) => {
         setColor(val.rgb)
-        // let newSettings = [...settings]
         settings[0][props.idx].r = color.r.toString()
         settings[0][props.idx].g = color.g.toString()
         settings[0][props.idx].b = color.b.toString()
-        // console.log("newSettings", JSON.stringify(newSettings))
-        // setSettings(newSettings)
         console.log("Settings Obji", JSON.stringify(settings))
-
-        // console.log("Settings", settings
-        // )
-        // console.log("props", JSON.stringify(props.color)
-        // )
-        // console.log("Color", JSON.stringify(color)
-        // )
-
-
-        // if (settings[0][props.idx].r && color.r) {
-        //     settings[0][props.idx].r = color.r.toString()
-        //     settings[0][props.idx].g = color.g.toString()
-        //     settings[0][props.idx].b = color.b.toString()
-        //     console.log("newSettings", JSON.stringify(settings))
-        //     // setSettings(s)
-
-        // }
-
-
     };
 
     useEffect(() => { setColor(settings?.[0]?.[props.idx]) }, [settings])
@@ -94,7 +72,5 @@ export default function ColorPicker(props) {
 
         </div>
     )
-
-
 }
 

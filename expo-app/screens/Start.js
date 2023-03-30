@@ -1,3 +1,4 @@
+import { Space } from "antd";
 import { Card } from "antd";
 import { useContext } from "react";
 import { Text } from "react-native";
@@ -10,6 +11,7 @@ export default function Start() {
 
     const { sessionData, setSessionData } = useContext(UserContext);
 
+    const otherUser = (sessionData.selectedUser == 'user1') ? 'user2' : 'user1'
     return (
         <AppLayout>
             <Card
@@ -19,12 +21,18 @@ export default function Start() {
                 // }}
                 title="Summary"
             >
-                <StatsCard
-                    title="My Stats"
-                />
-                <StatsCard
-                    title="Paired Stats"
-                />
+                <Space direction="vertical">
+                    <StatsCard
+                        title={`My Stats (${sessionData.selectedUser})`}
+                        user={sessionData.selectedUser}
+                    />
+                    <StatsCard
+                        title={`Paired Stats (${otherUser})`}
+                        user={otherUser}
+                    />
+
+                </Space>
+
             </Card>
         </AppLayout >
     )

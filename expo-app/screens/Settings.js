@@ -33,8 +33,6 @@ export default function Settings() {
         set(ref(db, `settings/${user}`), updatedSettings)
 
         message.success("Settings updated!")
-
-        // navigate('/');
     };
 
     return (
