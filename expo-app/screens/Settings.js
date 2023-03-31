@@ -7,9 +7,10 @@ import { SettingsContext, UserContext } from "../Context";
 import { db } from "../Firebase";
 import ColorPicker from "../components/ColorPicker";
 import AppLayout from "../components/Layout";
+import { Typography } from "antd";
 
-
-const leaf = ["0", "1", "2"];
+// hardcoded for MVP
+const LEAF = ["0", "1", "2"];
 
 
 export default function Settings() {
@@ -76,35 +77,32 @@ export default function Settings() {
                                     <Input disabled />
                                 </Form.Item>
                                 <Divider />
-                                <Form.Item
-                                    label="Plant Display Settings"
-                                >
-                                    <Space direction="vertical" >
-                                        {leaf.map((el, i) =>
-                                            <>
-                                                <Form.Item
-                                                    // name={el}
-                                                    label={`Leaf ${i + 1}`}
-                                                >
-                                                    <Space >
-                                                        <Form.Item
-                                                            name={`m${i}`}
-                                                            label={`Message`}
-                                                        >
-                                                            <Input key={i} />
-                                                        </Form.Item>
-                                                        <span />
-                                                        <Form.Item
-                                                            name={`c${i}`}
-                                                            label={`Color`}
-                                                        >
-                                                            <ColorPicker idx={i} />
-                                                        </Form.Item>
-                                                    </Space>
-                                                </Form.Item>
-                                            </>
-                                        )}
-                                    </Space>
+
+                                <Form.Item label={<Typography.Text strong>Plant Display Settings</Typography.Text>}>
+                                    {LEAF.map((el, i) =>
+                                        <>
+                                            <Form.Item
+                                                // name={el}
+                                                label={<Typography.Text type="secondary">{`Leaf ${i + 1}`}</Typography.Text>}
+                                            >
+                                                <Space >
+                                                    <Form.Item
+                                                        name={`m${i}`}
+                                                        label={`Message`}
+                                                    >
+                                                        <Input key={i} />
+                                                    </Form.Item>
+                                                    <span />
+                                                    <Form.Item
+                                                        name={`c${i}`}
+                                                        label={`Color`}
+                                                    >
+                                                        <ColorPicker idx={i} />
+                                                    </Form.Item>
+                                                </Space>
+                                            </Form.Item>
+                                        </>
+                                    )}
                                 </Form.Item>
                             </Space>
                             <Form.Item>

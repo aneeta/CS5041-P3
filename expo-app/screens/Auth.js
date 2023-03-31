@@ -1,6 +1,6 @@
 import { Button, Card, Form, Select } from "antd";
 import { push, ref } from "firebase/database";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AppLayout from "../components/Layout";
@@ -29,7 +29,6 @@ const Auth = (props) => {
 
             }
         })
-
         navigate('/home');
     };
 
@@ -37,6 +36,7 @@ const Auth = (props) => {
         <AppLayout disabled={true}>
             <Card
                 title="Log in to use"
+                style={{ textAlign: 'center' }}
             >
                 <Form
                     form={form}

@@ -1,7 +1,5 @@
 import { Space } from "antd";
-import { Card } from "antd";
 import { useContext } from "react";
-import { Text } from "react-native";
 import AppLayout from "../components/Layout";
 import StatsCard from "../components/StatsCard";
 import { UserContext } from "../Context";

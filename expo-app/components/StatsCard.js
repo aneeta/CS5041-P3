@@ -1,16 +1,10 @@
-import { Carousel } from "antd";
-import { Card, Row, Col } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { UserContext, DataContext } from "../Context";
-
 import React from 'react';
-import { Space } from "antd";
-import { Statistic } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { Card, Row, Col, Statistic, Space, Typography } from "antd";
 import { ContributionGraph, PieChart, LineChart } from "react-native-chart-kit";
 
-import { Dimensions } from "react-native";
-import { Divider } from "react-native-paper";
-import { Typography } from "antd";
+import { UserContext, DataContext } from "../Context";
+
 
 const screenWidth = 400;
 
@@ -46,9 +40,7 @@ export default function StatsCard(props) {
 
     useEffect(() => {
         setLoading(true)
-
         const filteredMsg = msgData?.filter(el => el.from === props.user)
-        // console.log(msgData)
         const data = filteredMsg?.map((el, i) => new Date(el.sent * 1000).toISOString().slice(0, 10))
             .reduce((acc, item) => {
                 acc[item] = (acc[item] || 0) + 1
@@ -63,6 +55,7 @@ export default function StatsCard(props) {
         if (lineData) {
             const now = new Date()
 
+            // interpolate data
             const labels = []
             const datapoints = []
 
@@ -72,24 +65,6 @@ export default function StatsCard(props) {
                 labels.push(currentKey.slice(11,))
                 datapoints.push(lineData[currentKey] || 0)
             }
-
-            // console.log("interpolatedData", interpolatedData);
-
-            // const sortedTimestamps = Object.keys(lineData).sort();
-            // const startDate = new Date(sortedTimestamps[0]);
-            // const endDate = new Date(sortedTimestamps[sortedTimestamps.length - 1]);
-
-
-
-            // for (let current = startDate; current <= endDate; current.setHours(current.getHours() + 1)) {
-            //     console.log("current", current)
-            //     const currentKey = current.toISOString().slice(0, 13);
-            //     const formattedKey = currentKey.replace("T", " ") + ":00"
-            //     interpolatedData[formattedKey] = lineData[currentKey] || 0;
-            // }
-
-            // console.log("interpolatedData", interpolatedData);
-
 
             const data = {
                 labels: labels.reverse(),
@@ -105,17 +80,11 @@ export default function StatsCard(props) {
 
             setGranularFreq(data)
 
-            // console.log("linegraph data", lineData)
-            // console.log("linegraph data keys", Object.keys(lineData))
-            // console.log("linegraph data transformed", data)
-
-            // const lineDataTransformed = Object.entries(data).map(([date, count]) => ({ date, count }))
-
         }
         if (data) {
             const heatmapData = Object.entries(data).map(([date, count]) => ({ date, count }))
             setFreq(heatmapData)
-            console.log("heatmap data", data)
+            // console.log("heatmap data", data)
             console.log("heatmap data transformed", heatmapData)
         }
 
@@ -129,9 +98,7 @@ export default function StatsCard(props) {
             const labels = ["Left", "Middle", "Right"]
             const transformedPieData = Object.entries(pie).map(([leaf, count]) => ({ leaf, count })).map((el, i) => ({ ...el, ...{ name: labels[i], color: colors[i] } }))
             setPie(transformedPieData)
-            // // .map((el, i) => ({ ...el, ...{ color: colors[i] } }))
-            // console.log("pie data", pie)
-            // console.log("pie data transformed", transformedPieData)
+
         }
 
         const msgFreq = filteredMsg?.map((el, i) => el.msg)
@@ -140,12 +107,9 @@ export default function StatsCard(props) {
                 return acc
             }, {})
 
-        // const sortedMsgFreq = Object.fromEntries(sortedArray);
         if (msgFreq) {
             const sortedArray = Object.entries(msgFreq).sort((a, b) => b[1] - a[1]);
-            // setTopMsg(sortedArray.slice(0, 3))
             setTopMsg(sortedArray[0])
-            //TODO change to props.topN
         }
 
         if (data && pie && msgFreq && granularFreq) {
@@ -153,15 +117,6 @@ export default function StatsCard(props) {
         }
 
     }, [msgData])
-
-
-    const contentStyle = {
-        height: '160px',
-        color: '#fff',
-        lineHeight: '160px',
-        textAlign: 'center',
-        background: '#364d79',
-    };
 
     return (
         <Card
@@ -191,12 +146,6 @@ export default function StatsCard(props) {
                             suffix=" times"
                         />
                     </Col>
-                    {/* <Col span={8}>
-                    <Statistic
-                        title="Time since last message sent"
-                        value={0}
-                    />
-                </Col> */}
                 </Row>
                 <Row gutter={[20, 20]}>
                     <Col span={12}>
@@ -221,7 +170,6 @@ export default function StatsCard(props) {
                             width={screenWidth}
                             height={220}
                             chartConfig={chartConfig}
-                        // onDayPress={(e) => { console.log(e) }}
                         />
                     </Col>
                 </Row>
@@ -233,52 +181,12 @@ export default function StatsCard(props) {
                             width={800}
                             height={220}
                             chartConfig={chartConfig}
-                            // verticalLabelRotation={90}
                             bezier
+                            style={{ borderRadius: 16 }}
                         />
                     </Col>
                 </Row>
-
             </Space>
-
-
-
         </Card >
     )
 }
-
-{/* <div style={{ alignItems: 'center' }}> */ }
-{/* <Carousel autoplay autoplaySpeed={8000} style={{ maxWidth: 500, }}> */ }
-// <div>
-//     <Statistic
-//         title="All touches"
-//         value={
-//             msgData?.filter(el => el.from === props.user).length
-//         }
-//     />
-//     {/* <h3 style={contentStyle}>1</h3> */}
-// </div>
-// <div>
-//     <Statistic
-//         title="Top Message"
-//         value={
-//             msgData?.filter(el => el.from === props.user).map((el, i) => el.msg)
-//                 .reduce((acc, item) => {
-//                     acc[item] = (acc[item] || 0) + 1
-//                     return acc
-//                 }, {})
-//         }
-//     />
-{/* <h3 style={contentStyle}>1</h3> */ }
-// </div>
-// <div>
-
-
-// </div>
-// <div>
-{/* TODO fix, freq not displaying */ }
-
-                // </div>
-
-                // {/* </Carousel> */}
-            // </div>

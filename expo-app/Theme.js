@@ -4,6 +4,7 @@ export const customTheme = {
         wireframe: false,
         colorBgBase: "#f2f0e4",
         colorInfo: "#44852d",
+
     },
     components: {
         Carousel: {
@@ -13,17 +14,9 @@ export const customTheme = {
             fontSizeLG: 24,
             fontWeightStrong: 900,
             colorTextHeading: "#276321",
-            // textAlign: 'center',
-            // alignContent: 'center',
         },
         Space: {
             size: 25,
         },
-        // Header: {
-        //     position: 'sticky',
-        //     top: 0,
-        //     zIndex: 1,
-        //     width: '100%',
-        // }
     }
 }
