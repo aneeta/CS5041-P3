@@ -1,6 +1,6 @@
 import socket
 import json
-from datetime import datetime
+from time import time
 
 from firebase_admin import (
     credentials, initialize_app, db
@@ -11,7 +11,7 @@ from firebase_admin import (
 
 
 # Local Port Specification
-port = 12345
+port = 22007
 
 # Specifies the number of unaccepted connections that the system will allow before refusing new connections
 number_of_backlog = 5
@@ -20,8 +20,6 @@ number_of_backlog = 5
 message_size = 4096  # bytes
 
 # db setup
-
-
 cred_obj = credentials.Certificate(
     'secrets/cs5041-p3-dcdf7-firebase-adminsdk-vdhjk-a7b58bb0d0.json')
 app = initialize_app(cred_obj, {
@@ -29,7 +27,6 @@ app = initialize_app(cred_obj, {
 })
 
 users = db.reference("/users").get()
-settings = db.reference("/settings").get()
 
 
 def main():
@@ -51,12 +48,6 @@ def main():
     # Plant connection variables
     plant_one_conn = None
     plant_two_conn = None
-
-    # TODO refactor to be less verbose
-    conn_map = {
-        'user1': plant_one_conn,
-        'user2': plant_two_conn
-    }
 
     while (plant_one_conn == None or plant_two_conn == None):
 
@@ -83,6 +74,12 @@ def main():
         except:
             print("[Error] Bad client response - ", client_res)
 
+    # TODO refactor to be less verbose
+    conn_map = {
+        'user1': plant_one_conn,
+        'user2': plant_two_conn
+    }
+
     # Set Server to Non-Blocking
     s.setblocking(False)
     plant_one_conn.setblocking(False)
@@ -99,12 +96,32 @@ def main():
 
 
 def handlePlantMessageDb(user, conn_map):
+    """Function which manages communications 
+    between the client socket and the database
+
+    Args:
+        user (str): User name string. Currently only ['user1', 'user2' supported]
+        conn_map (dict): Map relating the user to a connected socket
+
+    Raises:
+        NotImplementedError: Lead out of bounds
+
+    Returns:
+        bool: connected status
+    """
+    # pull settings from the db
+    settings = db.reference("/settings").get()
+
     try:
-        leaf = int(conn_map[user].recv(message_size).decode().strip())
-        if (leaf < 0 or leaf > 2):
+        leaf = conn_map[user].recv(message_size).decode().strip()
+
+        if (int(leaf) < 0 or int(leaf) > 2):
             raise NotImplementedError("Unrecognised leaf!")
 
-        response = settings[user]['leaf'][leaf]
+        # NOTE coming from the other plant!!!
+        response = settings[user]['map'][int(leaf)]
+        print('response', response)
+
         json_str = json.dumps(response)
 
         # Forward message to paired plant
@@ -112,17 +129,18 @@ def handlePlantMessageDb(user, conn_map):
             # Send JSON to other plant
             conn_map[settings[user]['pair']].sendall(json_str.encode())
             # Send touch to DB
-            db.reference("/touch").push().set({
+            db.reference("/data").push().set({
                 "from": user,
                 "to": settings[user]['pair'],
-                "sent": datetime.now().timetuple(),
-                "leaf": leaf,
-                "msg": response['msg'],
+                "sent": int(time()),
+                "leaf": response['l'],
+                "msg": response['m'],
                 "color": {
                     "r": response['r'],
                     "g": response['g'],
                     "b": response['b']
-                }
+                },
+                "data": response,
             })
 
             # Log Operation
@@ -138,6 +156,7 @@ def handlePlantMessageDb(user, conn_map):
             return False
 
     except:
+        # print('exception')
         # TODO - idk what this block if for??
         # print("[Notification] No messages from ", plant_to_check_name) - spam
         return True
@@ -170,7 +189,7 @@ def handlePlantMessage(plant_to_check_conn, plant_to_check_mapping, plant_to_che
                 # Connection is still alive
                 return True
 
-            except:
+            except:  # TODO check exception
 
                 # Connection is closed
                 print("[Error] " + plant_to_send_name +
@@ -189,6 +208,11 @@ def handlePlantMessage(plant_to_check_conn, plant_to_check_mapping, plant_to_che
 
 
 def relayReqs(conn_map):
+    """Wrapper function for handlePlantMessageDb()
+
+    Args:
+        conn_map (dict(conn)): Map relating the user to a connected socket
+    """
     while True:
         if not (
             handlePlantMessageDb('user1', conn_map) and handlePlantMessageDb(
