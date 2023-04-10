@@ -21,9 +21,9 @@ message_size = 4096  # bytes
 
 # db setup
 cred_obj = credentials.Certificate(
-    'secrets/cs5041-p3-dcdf7-firebase-adminsdk-vdhjk-a7b58bb0d0.json')
+    'secrets/cs5041-p3-22852-firebase-adminsdk-rffgv-cc79e89035.json')
 app = initialize_app(cred_obj, {
-    'databaseURL': "https://cs5041-p3-dcdf7-default-rtdb.europe-west1.firebasedatabase.app"
+    'databaseURL': "https://cs5041-p3-22852-default-rtdb.europe-west1.firebasedatabase.app"
 })
 
 users = db.reference("/users").get()

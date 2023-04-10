@@ -5,13 +5,13 @@ import { getDatabase } from 'firebase/database';
 // Config and initialisation for Firebase
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAE1Mv2RPmpV1gma2kSRnojc-WVJtARkO0",
-    authDomain: "cs5041-p3-dcdf7.firebaseapp.com",
-    databaseURL: "https://cs5041-p3-dcdf7-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cs5041-p3-dcdf7",
-    storageBucket: "cs5041-p3-dcdf7.appspot.com",
-    messagingSenderId: "342039128860",
-    appId: "1:342039128860:web:81a1c1887ca9499e5568d9",
+    apiKey: "AIzaSyDCOCR5F87FjczvTf62skOGPymUcvLF2ls",
+    authDomain: "cs5041-p3-22852.firebaseapp.com",
+    databaseURL: "https://cs5041-p3-22852-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cs5041-p3-22852",
+    storageBucket: "cs5041-p3-22852.appspot.com",
+    messagingSenderId: "246697247841",
+    appId: "1:246697247841:web:1aee6f26da52afc640d620"
 };
 
 
