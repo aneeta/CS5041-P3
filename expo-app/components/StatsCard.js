@@ -164,7 +164,7 @@ export default function StatsCard(props) {
                     <Col span={12}>
                         <Typography.Text type="secondary">Touched history</Typography.Text>
                         <ContributionGraph
-                            endDate={new Date("2023-04-01")}
+                            endDate={new Date("2023-04-11")}
                             numDays={105}
                             values={freq}
                             width={screenWidth}
